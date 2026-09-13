@@ -29,8 +29,9 @@
 
   <div class="box">
     <h2>Opt in</h2>
-    <p class="note">Use this form after you receive the opt-in link from David (or another non-A2P channel). Completing this form is how you consent to Ada SMS. If the link includes your number as a hint, it may appear pre-filled — you still must check the box and submit.</p>
+    <p class="note">Use this form after you receive the opt-in link from David (or another non-A2P channel). Completing this form is how you consent to Ada SMS. This page only works from the invite link you were sent. You still must check the box and submit.</p>
     <form id="ada-sms-opt-in" method="post" action="https://setup-arrival-blackberry-sum.trycloudflare.com/api/ada-sms-opt-in">
+      <input type="hidden" name="token" id="opt-in-token" value="" />
       <label>
         Mobile phone number
         <input type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="+1 …" />
@@ -55,12 +56,14 @@
   <script>
   (function () {
     var params = new URLSearchParams(window.location.search);
+    var token = params.get('token');
+    var tokenInput = document.getElementById('opt-in-token');
+    if (token && tokenInput) tokenInput.value = token;
     var phone = params.get('phone') || params.get('tel');
-    if (!phone) return;
-    var input = document.querySelector('form#ada-sms-opt-in input[name="phone"]');
-    if (!input) return;
-    input.value = phone;
-    // Never auto-check consent; user must check + submit.
+    if (phone) {
+      var input = document.querySelector('form#ada-sms-opt-in input[name="phone"]');
+      if (input) input.value = phone;
+    }
     var box = document.querySelector('form#ada-sms-opt-in input[name="sms_consent"]');
     if (box) box.checked = false;
   })();
